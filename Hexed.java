@@ -46,9 +46,11 @@ class Move{
 
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
-    private static int[][] board = new int[7][9];
+    private static int[][] board = new int[9][7];
     public static final int GREEN = 0; //constant color value assignments
     public static final int RED = 1;
+    public static final int NO_COLOR = 2; // constant value for no color tile
+    public static final int NO_TILE = 3; // constant value for no tile
 
   public static void main(String[] args){
 
@@ -66,50 +68,64 @@ public class Hexed {
       } if (color == 'g') {
           initColor = 0;
       }
-      
-      setInitialBoard(initRow, initCol, initColor, board);
 
+      board = setInitialBoard(initRow, initCol, initColor);
+      /*
+      for (int i = 0; i < board.length; i++) {
+          //loop through rows
+          for (int j = 0; j < board[i].length; j++) {
+              System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
+          }
+      }*/
 
   }
 
-  public static int[][] setInitialBoard(int row, int col, int color, int[][] board){
-    int[][] startingBoard = new int[7][9];
+  public static int[][] setInitialBoard(int row, int col, int color){
+    int[][] startingBoard = new int[9][7];
 
-    switch(color){
-      case '0':
-          if(col % 2 == 0){
-            board[col][row] = 0;
-            board[col-1][row-1] = 1;
-            board[col-1][row-2] = 0;
-            board[col][row-2] = 1;
-            board[col+1][row-2] = 0;
-            board[col+1][row-1] = 1;
-          }else{
-            board[col][row] = 0;
-            board[col-1][row] = 1;
-            board[col-1][row-1] = 0;
-            board[col][row-2] = 1;
-            board[col+1][row-1] = 0;
-            board[col+1][row] = 1;
-          }
-          break;
-      case '1':
-        if(col % 2 == 0){
-          board[col][row] = 1;
-          board[col-1][row-1] = 0;
-          board[col-1][row-2] = 1;
-          board[col][row-2] = 0;
-          board[col+1][row-2] = 1;
-          board[col+1][row-1] = 0;
-        }else{
-          board[col][row] = 1;
-          board[col-1][row] = 0;
-          board[col-1][row-1] = 1;
-          board[col][row-2] = 0;
-          board[col+1][row-1] = 1;
-          board[col+1][row] = 0;
+    // assign no color to all tiles.
+    // loop through cols
+    for (int i = 0; i < startingBoard.length; i++) {
+        //loop through rows
+        for (int j = 0; j < startingBoard[i].length; j++) {
+            startingBoard[i][j] = 2;
         }
-        break;
+    }
+
+    if (color == 0) {
+        if(col % 2 == 0){
+          startingBoard[col][row] = 0;
+          startingBoard[col-1][row-1] = 1;
+          startingBoard[col-1][row-2] = 0;
+          startingBoard[col][row-2] = 1;
+          startingBoard[col+1][row-2] = 0;
+          startingBoard[col+1][row-1] = 1;
+        }else{
+          startingBoard[col][row] = 0;
+          startingBoard[col-1][row] = 1;
+          startingBoard[col-1][row-1] = 0;
+          startingBoard[col][row-2] = 1;
+          startingBoard[col+1][row-1] = 0;
+          startingBoard[col+1][row] = 1;
+        }
+    }
+
+    if (color == 1) {
+        if(col % 2 == 0){
+          startingBoard[col][row] = 1;
+          startingBoard[col-1][row-1] = 0;
+          startingBoard[col-1][row-2] = 1;
+          startingBoard[col][row-2] = 0;
+          startingBoard[col+1][row-2] = 1;
+          startingBoard[col+1][row-1] = 0;
+        }else{
+          startingBoard[col][row] = 1;
+          startingBoard[col-1][row] = 0;
+          startingBoard[col-1][row-1] = 1;
+          startingBoard[col][row-2] = 0;
+          startingBoard[col+1][row-1] = 1;
+          startingBoard[col+1][row] = 0;
+        }
     }
 
     return startingBoard;
@@ -117,6 +133,7 @@ public class Hexed {
 
   public LinkedList<Move> getMoves(){
     LinkedList<Move> validMoves = new LinkedList<>();
+
 
     return validMoves;
   }
