@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.LinkedList;
 import java.util.*;
 
+//each move should have a column, row and color
 class Move{
   private int row, col, color;
 
@@ -18,7 +19,7 @@ class Move{
     this.col = col;
   }
 
-  public void setRow(int Row){
+  public void setRow(int row){
     this.row = row;
   }
 
@@ -46,11 +47,20 @@ class Move{
 
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
-    private static int[][] board = new int[9][7];
-    public static final int GREEN = 0; //constant color value assignments
-    public static final int RED = 1;
-    public static final int NO_COLOR = 2; // constant value for no color tile
+    private static int[][] board = new int[9][7]; // [column][row]
+    public static final int GREEN = 1; //constant color value assignments
+    public static final int RED = 2;
+    public static final int NO_COLOR = 0; // constant value for no color tile
     public static final int NO_TILE = 3; // constant value for no tile
+
+    //directions and their assigned values
+    public static final int NORTH = 0;
+    public static final int NE = 1; //northeast
+    public static final int NW = 2; //northwest
+    public static final int SOUTH = 3;
+    public static final int SE = 4; //southeast
+    public static final int SW = 5; //southwest
+
 
   public static void main(String[] args){
 
@@ -64,9 +74,9 @@ public class Hexed {
       int initColor = 1;
 
       if (color == 'r') {
-          initColor = 1;
+          initColor = Hexed.RED;
       } if (color == 'g') {
-          initColor = 0;
+          initColor = Hexed.GREEN;
       }
 
       board = setInitialBoard(initRow, initCol, initColor);
@@ -80,6 +90,7 @@ public class Hexed {
 
   }
 
+  //generates the board with the starting board that has 6 alternately colored tiles
   public static int[][] setInitialBoard(int row, int col, int color){
     int[][] startingBoard = new int[9][7];
 
@@ -88,46 +99,47 @@ public class Hexed {
     for (int i = 0; i < startingBoard.length; i++) {
         //loop through rows
         for (int j = 0; j < startingBoard[i].length; j++) {
-            startingBoard[i][j] = 2;
+            startingBoard[i][j] = Hexed.NO_COLOR;
         }
     }
 
-    if (color == 0) {
+    if (color == Hexed.GREEN) {
+        //even
         if(col % 2 == 0){
-          startingBoard[col][row] = 0;
-          startingBoard[col-1][row-1] = 1;
-          startingBoard[col-1][row-2] = 0;
-          startingBoard[col][row-2] = 1;
-          startingBoard[col+1][row-2] = 0;
-          startingBoard[col+1][row-1] = 1;
+          startingBoard[col][row] = Hexed.GREEN;
+          startingBoard[col-1][row-1] = Hexed.RED;
+          startingBoard[col-1][row-2] = Hexed.GREEN;
+          startingBoard[col][row-2] = Hexed.RED;
+          startingBoard[col+1][row-2] = Hexed.GREEN;
+          startingBoard[col+1][row-1] = Hexed.RED;
         }else{
-          startingBoard[col][row] = 0;
-          startingBoard[col-1][row] = 1;
-          startingBoard[col-1][row-1] = 0;
-          startingBoard[col][row-2] = 1;
-          startingBoard[col+1][row-1] = 0;
-          startingBoard[col+1][row] = 1;
+          startingBoard[col][row] = Hexed.GREEN;
+          startingBoard[col-1][row] = Hexed.RED;
+          startingBoard[col-1][row-1] = Hexed.GREEN;
+          startingBoard[col][row-2] = Hexed.RED;
+          startingBoard[col+1][row-1] = Hexed.GREEN;
+          startingBoard[col+1][row] = Hexed.RED;
         }
     }
 
-    if (color == 1) {
+    if (color == Hexed.RED) {
+        //even
         if(col % 2 == 0){
-          startingBoard[col][row] = 1;
-          startingBoard[col-1][row-1] = 0;
-          startingBoard[col-1][row-2] = 1;
-          startingBoard[col][row-2] = 0;
-          startingBoard[col+1][row-2] = 1;
-          startingBoard[col+1][row-1] = 0;
+          startingBoard[col][row] = Hexed.RED;
+          startingBoard[col-1][row-1] = Hexed.GREEN;
+          startingBoard[col-1][row-2] = Hexed.RED;
+          startingBoard[col][row-2] = Hexed.GREEN;
+          startingBoard[col+1][row-2] = Hexed.RED;
+          startingBoard[col+1][row-1] = Hexed.GREEN;
         }else{
-          startingBoard[col][row] = 1;
-          startingBoard[col-1][row] = 0;
-          startingBoard[col-1][row-1] = 1;
-          startingBoard[col][row-2] = 0;
-          startingBoard[col+1][row-1] = 1;
-          startingBoard[col+1][row] = 0;
+          startingBoard[col][row] = Hexed.RED;
+          startingBoard[col-1][row] = Hexed.GREEN;
+          startingBoard[col-1][row-1] = Hexed.RED;
+          startingBoard[col][row-2] = Hexed.GREEN;
+          startingBoard[col+1][row-1] = Hexed.RED;
+          startingBoard[col+1][row] = Hexed.GREEN;
         }
     }
-
     return startingBoard;
   }
 
@@ -135,6 +147,42 @@ public class Hexed {
     LinkedList<Move> validMoves = new LinkedList<>();
 
 
+
     return validMoves;
   }
+
+/*  public boolean checkValidMove(int col, int row, int[][] board) {
+      boolean valid = true;
+
+      //check if the cell is blank
+      if (board[col][row] == Hexed.NO_COLOR) {
+
+      }
+      return valid;
+  }
+*/
+
+  public boolean checkNorthCell(int[][] board){
+    boolean valid = false;
+    int col = 0, row = 0;
+
+    //checks all the cells in the board
+    //cols
+    for(int i = 0; i < board.length; i++){
+      //rows
+      for(int j = 0; j < board[i].length; j++){
+
+        //checks if the cell is blank
+        if (board[i][j] == Hexed.NO_COLOR) {
+          row = j + 1;
+          col = i;
+        }else{
+          valid = false;
+        }
+      }
+    }
+
+    return valid;
+  }
+
 }
