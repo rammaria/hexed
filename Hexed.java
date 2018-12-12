@@ -1,15 +1,15 @@
-
-
+import java.util.Scanner;
 import java.lang.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.*;
+
+
 
 //each move should have a column, row and color
 class Move{
   private int row, col, color;
 
-  public Move(int row, int col, int color){
+  public Move(int col, int row, int color){
     this.col = col;
     this.row = row;
     this.color = color;
@@ -45,6 +45,10 @@ class Move{
   }
 }
 
+public class State(){
+
+}
+
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
     private static int[][] board = new int[9][7]; // [column][row]
@@ -53,16 +57,9 @@ public class Hexed {
     public static final int NO_COLOR = 0; // constant value for no color tile
     public static final int NO_TILE = 3; // constant value for no tile
 
-    //directions and their assigned values
-    public static final int NORTH = 0;
-    public static final int NE = 1; //northeast
-    public static final int NW = 2; //northwest
-    public static final int SOUTH = 3;
-    public static final int SE = 4; //southeast
-    public static final int SW = 5; //southwest
-
-
   public static void main(String[] args){
+
+      ArrayList<Move> moves = new ArrayList<Move>();
 
       System.out.println("Enter initial game info.");
       System.out.print("Column: ");
@@ -71,12 +68,21 @@ public class Hexed {
       int initRow = kbd.nextInt();
       System.out.print("Color[r/g]: ");
       char color = kbd.next().charAt(0);
-      int initColor = 1;
+      int initColor = 0;
+      System.out.print("First Move[r/g]: ");
+      char firstMove = kbd.next().charAt(0);
+      int firstColor = 1;
 
       if (color == 'r') {
           initColor = Hexed.RED;
       } if (color == 'g') {
           initColor = Hexed.GREEN;
+      }
+
+      if (firstMove == 'r') {
+          firstColor = Hexed.RED;
+      } if (firstMove == 'g') {
+          firstColor = Hexed.GREEN;
       }
 
       board = setInitialBoard(initRow, initCol, initColor);
@@ -87,6 +93,7 @@ public class Hexed {
               System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
           }
       }*/
+      System.out.println(getMoves(firstMove).toString());
 
   }
 
@@ -143,46 +150,404 @@ public class Hexed {
     return startingBoard;
   }
 
-  public LinkedList<Move> getMoves(){
-    LinkedList<Move> validMoves = new LinkedList<>();
-
-
-
+  //returns the list of valid moves
+  public static ArrayList<Move> getMoves(int playingColor){
+    ArrayList<Move> validMoves = new ArrayList<Move>();
+    for (int i = 0; i < board.length; i++){
+     for (int j = 0; j < board[i].length; j++){
+       if (isValid(i, j, board, playingColor)){
+         validMoves.add(new Move(i, j, playingColor));
+       }
+     }
+   }
     return validMoves;
   }
 
-/*  public boolean checkValidMove(int col, int row, int[][] board) {
-      boolean valid = true;
-
-      //check if the cell is blank
-      if (board[col][row] == Hexed.NO_COLOR) {
-
-      }
-      return valid;
-  }
-*/
-
-  public boolean checkNorthCell(int[][] board){
+  //check if move is valid for all the cells in different directions
+  public static boolean isValid(int col, int row, int[][] board, int player) {
     boolean valid = false;
-    int col = 0, row = 0;
+    int opponent = 0;
 
-    //checks all the cells in the board
-    //cols
-    for(int i = 0; i < board.length; i++){
-      //rows
-      for(int j = 0; j < board[i].length; j++){
+    if(player == Hexed.GREEN){
+      opponent = Hexed.RED;
+    }else{
+      opponent = Hexed.GREEN;
+    }
 
-        //checks if the cell is blank
-        if (board[i][j] == Hexed.NO_COLOR) {
-          row = j + 1;
-          col = i;
-        }else{
-          valid = false;
+    // up
+    int nextColNorth = col;
+    int nextRowNorth = row + 1;
+
+    try {
+        if (board[nextColNorth][nextRowNorth] == opponent){
+            try {
+                if (checkNorthCell(nextRowNorth, nextColNorth, player, opponent, board)){
+                  valid = true;
+                }
+            } catch(Exception e) {
+                valid = false;
+            }
         }
-      }
+    } catch(Exception e) {
+        valid = false;
+    }
+
+
+    // down
+    int nextColSouth = col;
+    int nextRowSouth = row - 1;
+
+    try {
+        if (board[nextColSouth][nextRowSouth] == opponent){
+            try {
+                if (checkSouthCell(nextRowSouth, nextColSouth, player, opponent, board)){
+                  valid = true;
+                }
+            } catch(Exception e) {
+                valid = false;
+            }
+        }
+    } catch(Exception e) {
+        valid = false;
+    }
+
+
+    if (col % 2 == 0) {
+        //northeast
+        int nextColNE1 = col + 1;
+        int nextRowNE1 = row;
+
+        try {
+            if (board[nextColNE1][nextRowNE1] == opponent){
+                try {
+                    if (checkNorthEastCell(nextRowNE1, nextColNE1, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+        //northwest
+        int nextColNW1 = col - 1;
+        int nextRowNW1 = row;
+
+        try {
+            if (board[nextColNW1][nextRowNW1] == opponent){
+                try {
+                    if (checkNorthWestCell(nextRowNW1, nextColNW1, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+        // southeast
+        int nextColSE1 = col + 1;
+        int nextRowSE1 = row - 1;
+
+        try {
+            if (board[nextColSE1][nextRowSE1] == opponent){
+                try {
+                    if (checkSouthEastCell(nextRowSE1, nextColSE1, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+        //southwest
+        int nextColSW1 = col - 1;
+        int nextRowSW1 = row - 1;
+
+        try {
+            if (board[nextColSW1][nextRowSW1] == opponent){
+                try {
+                    if (checkSouthWestCell(nextRowSW1, nextColSW1, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+    } else {
+
+        //northeast
+        int nextColNE = col + 1;
+        int nextRowNE = row + 1;
+
+        try {
+            if (board[nextColNE][nextRowNE] == opponent){
+                try {
+                    if (checkNorthEastCell(nextRowNE, nextColNE, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+        //northwest
+        int nextColNW = col - 1;
+        int nextRowNW = row + 1;
+
+        try {
+            if (board[nextColNW][nextRowNW] == opponent){
+                try {
+                    if (checkNorthWestCell(nextRowNW, nextColNW, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+        //southeast
+        int nextColSE = col + 1;
+        int nextRowSE = row;
+
+        try {
+            if (board[nextColSE][nextRowSE] == opponent){
+                try {
+                    if (checkSouthEastCell(nextRowSE, nextColSE, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
+
+        //southwest
+        int nextRowSW = row;
+        int nextColSW = col + 1;
+
+        try {
+            if (board[nextColSW][nextRowSW] == opponent){
+                try {
+                    if (checkSouthWestCell(nextRowSW, nextColSW, player, opponent, board)){
+                      valid = true;
+                    }
+                } catch(Exception e) {
+                    valid = false;
+                }
+            }
+        } catch(Exception e) {
+            valid = false;
+        }
     }
 
     return valid;
+  }
+
+  //check if there are still valid moves
+  public static boolean isHexed(ArrayList<Move> moves){
+    boolean res = false;
+
+    if(moves.size() == 0){
+      res = true;
+    } else {
+      res = false;
+    }
+
+    return res;
+  }
+
+  public static boolean checkNorthCell (int row, int col, int player, int opponent, int[][] board) {
+    boolean valid = false;
+    int nextRow = row + 1;
+    int nextCol = col;
+
+    if (board[nextCol][nextRow] == player) {
+      valid = true;
+    }
+
+    //checks if next cell is out of the hexed board
+    if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  public static boolean checkNorthWestCell (int row, int col, int player, int opponent, int[][] board) {
+    boolean valid = true;
+
+    int nextRow = row, nextCol = col;
+
+    //if col is even
+    if (col % 2 == 0) {
+        nextRow = row;
+        nextCol = col - 1;
+    } else {
+        nextRow = row + 1;
+        nextCol = col - 1;
+    }
+
+    if (board[nextCol][nextRow] == player) {
+      valid = true;
+    }
+
+    //checks if next cell is out of the hexed board
+    if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
+      valid = false;
+    }
+
+    return valid;
+
+  }
+
+  public static boolean checkNorthEastCell (int row, int col, int player, int opponent, int[][] board) {
+    boolean valid = true;
+    // if col is odd
+    int nextRow = row, nextCol = col;
+
+    //if col is even
+    if (col % 2 == 0) {
+        nextRow = row;
+        nextCol = col + 1;
+    } else {
+        nextRow = row + 1;
+        nextCol = col + 1;
+    }
+
+    if (board[nextCol][nextRow] == player) {
+      valid = true;
+    }
+
+    //checks if next cell is out of the hexed board
+    if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  public static boolean checkSouthCell (int row, int col, int player, int opponent, int[][] board) {
+    boolean valid = true;
+    // if col is odd
+    int nextRow = row - 1;
+    int nextCol = col;
+
+    if (board[nextCol][nextRow] == player) {
+      valid = true;
+    }
+
+    //checks if next cell is out of the hexed board
+    if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  public static boolean checkSouthEastCell (int row, int col, int player, int opponent, int[][] board) {
+    boolean valid = true;
+    // if col is odd
+    int nextRow = row, nextCol = col;
+
+    //if col is even
+    if (col % 2 == 0) {
+        nextRow = row - 1;
+        nextCol = col + 1;
+    } else {
+        nextRow = row;
+        nextCol = col + 1;
+    }
+
+    if (board[nextCol][nextRow] == player) {
+      valid = true;
+    }
+
+    //checks if next cell is out of the hexed board
+    if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  public static boolean checkSouthWestCell (int row, int col, int player, int opponent, int[][] board) {
+    boolean valid = true;
+    // if col is odd
+    int nextRow = row, nextCol = col;
+
+    //if col is even
+    if (col % 2 == 0) {
+        nextRow = row - 1;
+        nextCol = col - 1;
+    } else {
+        nextRow = row;
+        nextCol = col - 1;
+    }
+
+    if (board[nextCol][nextRow] == player) {
+      valid = true;
+    }
+
+    //checks if next cell is out of the hexed board
+    if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  public void move(Move move, int player, int[][] board) throws Exception{
+
+    if (move == null){
+      if (player == Hexed.GREEN){
+        player = Hexed.RED;
+      } else {
+        player = Hexed.GREEN;
+      }
+    }
+
+    int col = move.getCol();
+    int row = move.getRow();
+    int color = move.getColor();
+
+    //checks if the move's color is equal to the current player's color
+    if (color != player){
+      throw new Exception("Error. Wrong Player.");
+    }
+
+
+    //checks if the move is valid and turns the color of the cells
+    if(isValid(col, row, board, player)){
+      board[row][col] = player;
+      if(player == Hexed.GREEN){
+        player = Hexed.RED;
+      }else{
+        player = Hexed.GREEN;
+      }
+      return;
+    }else{
+      throw new Exception("Not a Valid Move.");
+    }
   }
 
 }
