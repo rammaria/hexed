@@ -45,9 +45,17 @@ class Move{
   }
 }
 
-// public class State(){
-//
-// }
+class State{
+  private int[][] board;
+  int player;
+  int color;
+
+  public State(){
+    this.board = board;
+    this.player = player;
+    this.color = color;
+  }
+}
 
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
@@ -94,6 +102,10 @@ public class Hexed {
           }
       }*/
       System.out.println(getMoves(firstMove).toString());
+
+
+
+
 
   }
 
