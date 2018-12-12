@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 
-
+//@author rammaria
 //each move should have a column, row and color
 class Move{
   private int row, col, color;
@@ -45,9 +45,9 @@ class Move{
   }
 }
 
-public class State(){
-
-}
+// public class State(){
+//
+// }
 
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
@@ -165,6 +165,11 @@ public class Hexed {
 
   //check if move is valid for all the cells in different directions
   public static boolean isValid(int col, int row, int[][] board, int player) {
+
+    if(board[col][row] != Hexed.NO_COLOR){
+      return false;
+    }
+
     boolean valid = false;
     int opponent = 0;
 
@@ -180,16 +185,12 @@ public class Hexed {
 
     try {
         if (board[nextColNorth][nextRowNorth] == opponent){
-            try {
-                if (checkNorthCell(nextRowNorth, nextColNorth, player, opponent, board)){
-                  valid = true;
-                }
-            } catch(Exception e) {
-                valid = false;
+            if (checkNorthCell(nextRowNorth, nextColNorth, player, opponent, board)){
+              valid = true;
             }
         }
     } catch(Exception e) {
-        valid = false;
+
     }
 
 
@@ -199,18 +200,13 @@ public class Hexed {
 
     try {
         if (board[nextColSouth][nextRowSouth] == opponent){
-            try {
-                if (checkSouthCell(nextRowSouth, nextColSouth, player, opponent, board)){
+            if (checkSouthCell(nextRowSouth, nextColSouth, player, opponent, board)){
                   valid = true;
-                }
-            } catch(Exception e) {
-                valid = false;
             }
         }
     } catch(Exception e) {
-        valid = false;
-    }
 
+    }
 
     if (col % 2 == 0) {
         //northeast
@@ -219,16 +215,12 @@ public class Hexed {
 
         try {
             if (board[nextColNE1][nextRowNE1] == opponent){
-                try {
-                    if (checkNorthEastCell(nextRowNE1, nextColNE1, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
+                if (checkNorthEastCell(nextRowNE1, nextColNE1, player, opponent, board)){
+                  valid = true;
                 }
             }
         } catch(Exception e) {
-            valid = false;
+
         }
 
         //northwest
@@ -237,16 +229,12 @@ public class Hexed {
 
         try {
             if (board[nextColNW1][nextRowNW1] == opponent){
-                try {
-                    if (checkNorthWestCell(nextRowNW1, nextColNW1, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
+                if (checkNorthWestCell(nextRowNW1, nextColNW1, player, opponent, board)){
+                    valid = true;
                 }
             }
         } catch(Exception e) {
-            valid = false;
+
         }
 
         // southeast
@@ -255,16 +243,12 @@ public class Hexed {
 
         try {
             if (board[nextColSE1][nextRowSE1] == opponent){
-                try {
-                    if (checkSouthEastCell(nextRowSE1, nextColSE1, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
-                }
-            }
+                if (checkSouthEastCell(nextRowSE1, nextColSE1, player, opponent, board)){
+                  valid = true;
+              }
+          }
         } catch(Exception e) {
-            valid = false;
+
         }
 
         //southwest
@@ -273,16 +257,12 @@ public class Hexed {
 
         try {
             if (board[nextColSW1][nextRowSW1] == opponent){
-                try {
-                    if (checkSouthWestCell(nextRowSW1, nextColSW1, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
-                }
-            }
+                if (checkSouthWestCell(nextRowSW1, nextColSW1, player, opponent, board)){
+                  valid = true;
+              }
+          }
         } catch(Exception e) {
-            valid = false;
+
         }
 
     } else {
@@ -293,16 +273,12 @@ public class Hexed {
 
         try {
             if (board[nextColNE][nextRowNE] == opponent){
-                try {
-                    if (checkNorthEastCell(nextRowNE, nextColNE, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
-                }
-            }
+                if (checkNorthEastCell(nextRowNE, nextColNE, player, opponent, board)){
+                  valid = true;
+              }
+          }
         } catch(Exception e) {
-            valid = false;
+
         }
 
         //northwest
@@ -311,16 +287,12 @@ public class Hexed {
 
         try {
             if (board[nextColNW][nextRowNW] == opponent){
-                try {
-                    if (checkNorthWestCell(nextRowNW, nextColNW, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
-                }
-            }
+                if (checkNorthWestCell(nextRowNW, nextColNW, player, opponent, board)){
+                  valid = true;
+              }
+          }
         } catch(Exception e) {
-            valid = false;
+
         }
 
         //southeast
@@ -329,16 +301,12 @@ public class Hexed {
 
         try {
             if (board[nextColSE][nextRowSE] == opponent){
-                try {
-                    if (checkSouthEastCell(nextRowSE, nextColSE, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
-                }
-            }
+                if (checkSouthEastCell(nextRowSE, nextColSE, player, opponent, board)){
+                  valid = true;
+              }
+          }
         } catch(Exception e) {
-            valid = false;
+
         }
 
         //southwest
@@ -347,16 +315,12 @@ public class Hexed {
 
         try {
             if (board[nextColSW][nextRowSW] == opponent){
-                try {
-                    if (checkSouthWestCell(nextRowSW, nextColSW, player, opponent, board)){
-                      valid = true;
-                    }
-                } catch(Exception e) {
-                    valid = false;
-                }
-            }
+                if (checkSouthWestCell(nextRowSW, nextColSW, player, opponent, board)){
+                  valid = true;
+              }
+          }
         } catch(Exception e) {
-            valid = false;
+
         }
     }
 
@@ -385,9 +349,17 @@ public class Hexed {
       valid = true;
     }
 
+    if (board[nextCol][nextRow] == Hexed.NO_COLOR){
+      valid = false;
+    }
+
     //checks if next cell is out of the hexed board
     if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
       valid = false;
+    }
+
+    if(board[nextCol][nextRow] == opponent){
+      return checkNorthCell(nextRow, nextCol, player, opponent, board);
     }
 
     return valid;
@@ -411,9 +383,17 @@ public class Hexed {
       valid = true;
     }
 
+    if (board[nextCol][nextRow] == Hexed.NO_COLOR){
+      valid = false;
+    }
+
     //checks if next cell is out of the hexed board
     if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
       valid = false;
+    }
+
+    if(board[nextCol][nextRow] == opponent){
+      return checkNorthWestCell(nextRow, nextCol, player, opponent, board);
     }
 
     return valid;
@@ -438,9 +418,17 @@ public class Hexed {
       valid = true;
     }
 
+    if (board[nextCol][nextRow] == Hexed.NO_COLOR){
+      valid = false;
+    }
+
     //checks if next cell is out of the hexed board
     if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
       valid = false;
+    }
+
+    if(board[nextCol][nextRow] == opponent){
+      return checkNorthEastCell(nextRow, nextCol, player, opponent, board);
     }
 
     return valid;
@@ -456,9 +444,17 @@ public class Hexed {
       valid = true;
     }
 
+    if (board[nextCol][nextRow] == Hexed.NO_COLOR){
+      valid = false;
+    }
+
     //checks if next cell is out of the hexed board
     if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
       valid = false;
+    }
+
+    if(board[nextCol][nextRow] == opponent){
+      return checkSouthCell(nextRow, nextCol, player, opponent, board);
     }
 
     return valid;
@@ -482,9 +478,17 @@ public class Hexed {
       valid = true;
     }
 
+    if (board[nextCol][nextRow] == Hexed.NO_COLOR){
+      valid = false;
+    }
+
     //checks if next cell is out of the hexed board
     if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
       valid = false;
+    }
+
+    if(board[nextCol][nextRow] == opponent){
+      return checkSouthEastCell(nextRow, nextCol, player, opponent, board);
     }
 
     return valid;
@@ -508,9 +512,17 @@ public class Hexed {
       valid = true;
     }
 
+    if (board[nextCol][nextRow] == Hexed.NO_COLOR){
+      valid = false;
+    }
+
     //checks if next cell is out of the hexed board
     if (nextRow >= board.length || nextRow < 0 || nextCol >= board[0].length || nextCol < 0) {
       valid = false;
+    }
+
+    if(board[nextCol][nextRow] == opponent){
+      return checkSouthWestCell(nextRow, nextCol, player, opponent, board);
     }
 
     return valid;
@@ -538,7 +550,7 @@ public class Hexed {
 
     //checks if the move is valid and turns the color of the cells
     if(isValid(col, row, board, player)){
-      board[row][col] = player;
+      board[col][row] = player;
       if(player == Hexed.GREEN){
         player = Hexed.RED;
       }else{
