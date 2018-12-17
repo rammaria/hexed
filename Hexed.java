@@ -115,7 +115,7 @@ public class Hexed {
             opColor = Hexed.RED;
         }
 
-        board = setInitialBoard(initRow, initCol, initColor);
+        board = setInitialBoard(initCol, initRow, initColor);
       /*
       for (int i = 0; i < board.length; i++) {
           //loop through rows
@@ -123,22 +123,32 @@ public class Hexed {
               System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
           }
       }*/
-      System.out.println(pColor + " " +playerColor);
-      System.out.println(getMoves(playerColor).toString());
 
-      //while(!gameOver){
+      ArrayList<Move> playerMoves = new ArrayList<>();
+
+      while(!gameOver){
 
         if (player == 1) {
+
             Move playerMove = new Move();
             System.out.print("Move:");
-            playerMove = getRandomMove(getMoves(playerColor));
+            playerMoves = getMoves(playerColor);
+            playerMove = getRandomMove(playerMoves);
             System.out.println(playerMove.toString());
 
             try {
                 move(playerMove, playerColor, board);
             } catch(Exception e) {
-
+              e.printStackTrace();
             }
+            playerMoves.clear();
+
+            // for (int i = 0; i < board.length; i++) {
+            //     //loop through rows
+            //     for (int j = 0; j < board[i].length; j++) {
+            //         System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
+            //     }
+            // }
 
             System.out.print("Enter opponent's move: ");
             int opCol = kbd.nextInt();
@@ -148,8 +158,16 @@ public class Hexed {
             try {
                 move(opMove, opColor, board);
             } catch(Exception e) {
-
+                e.printStackTrace();
             }
+
+            // for (int i = 0; i < board.length; i++) {
+            //     //loop through rows
+            //     for (int j = 0; j < board[i].length; j++) {
+            //         System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
+            //     }
+            // }
+
         } else {
             System.out.print("Enter opponent's move: ");
             int opCol = kbd.nextInt();
@@ -159,15 +177,28 @@ public class Hexed {
             try {
                 move(opMove, opColor, board);
             } catch(Exception e) {
+              e.printStackTrace();
+            }
+
+            Move playerMove = new Move();
+            System.out.print("Move:");
+            playerMoves = getMoves(playerColor);
+            playerMove = getRandomMove(playerMoves);
+            System.out.println(playerMove.toString());
+
+            try {
+                move(playerMove, playerColor, board);
+            } catch(Exception e) {
 
             }
+            playerMoves.clear();
         }
-    //}
+    }
 
     }
 
     //generates the board with the starting board that has 6 alternately colored tiles
-    public static int[][] setInitialBoard(int row, int col, int color) {
+    public static int[][] setInitialBoard(int col, int row, int color) {
         int[][] startingBoard = new int[9][7];
 
         // assign no color to all tiles.
@@ -224,7 +255,7 @@ public class Hexed {
         ArrayList<Move> validMoves = new ArrayList<Move>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (isValid(i, j, board, playingColor)) {
+                if (isValid(i, j, board, playingColor, false)) {
                     validMoves.add(new Move(i, j, playingColor));
                 }
             }
@@ -233,7 +264,7 @@ public class Hexed {
     }
 
     //check if move is valid for all the cells in different directions
-    public static boolean isValid(int col, int row, int[][] board, int player) {
+    public static boolean isValid(int col, int row, int[][] board, int player, boolean occupied) {
 
         if (board[col][row] != Hexed.NO_COLOR) {
             return false;
@@ -254,7 +285,7 @@ public class Hexed {
 
         try {
             if (board[nextColNorth][nextRowNorth] == opponent) {
-                if (checkNorthCell(nextRowNorth, nextColNorth, player, opponent, board)) {
+                if (checkNorthCell(nextRowNorth, nextColNorth, player, opponent, board, occupied)) {
                     valid = true;
                 }
             }
@@ -269,7 +300,7 @@ public class Hexed {
 
         try {
             if (board[nextColSouth][nextRowSouth] == opponent) {
-                if (checkSouthCell(nextRowSouth, nextColSouth, player, opponent, board)) {
+                if (checkSouthCell(nextRowSouth, nextColSouth, player, opponent, board, occupied)) {
                     valid = true;
                 }
             }
@@ -284,7 +315,7 @@ public class Hexed {
 
             try {
                 if (board[nextColNE1][nextRowNE1] == opponent) {
-                    if (checkNorthEastCell(nextRowNE1, nextColNE1, player, opponent, board)) {
+                    if (checkNorthEastCell(nextRowNE1, nextColNE1, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -298,7 +329,7 @@ public class Hexed {
 
             try {
                 if (board[nextColNW1][nextRowNW1] == opponent) {
-                    if (checkNorthWestCell(nextRowNW1, nextColNW1, player, opponent, board)) {
+                    if (checkNorthWestCell(nextRowNW1, nextColNW1, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -312,7 +343,7 @@ public class Hexed {
 
             try {
                 if (board[nextColSE1][nextRowSE1] == opponent) {
-                    if (checkSouthEastCell(nextRowSE1, nextColSE1, player, opponent, board)) {
+                    if (checkSouthEastCell(nextRowSE1, nextColSE1, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -326,7 +357,7 @@ public class Hexed {
 
             try {
                 if (board[nextColSW1][nextRowSW1] == opponent) {
-                    if (checkSouthWestCell(nextRowSW1, nextColSW1, player, opponent, board)) {
+                    if (checkSouthWestCell(nextRowSW1, nextColSW1, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -342,7 +373,7 @@ public class Hexed {
 
             try {
                 if (board[nextColNE][nextRowNE] == opponent) {
-                    if (checkNorthEastCell(nextRowNE, nextColNE, player, opponent, board)) {
+                    if (checkNorthEastCell(nextRowNE, nextColNE, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -356,7 +387,7 @@ public class Hexed {
 
             try {
                 if (board[nextColNW][nextRowNW] == opponent) {
-                    if (checkNorthWestCell(nextRowNW, nextColNW, player, opponent, board)) {
+                    if (checkNorthWestCell(nextRowNW, nextColNW, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -370,7 +401,7 @@ public class Hexed {
 
             try {
                 if (board[nextColSE][nextRowSE] == opponent) {
-                    if (checkSouthEastCell(nextRowSE, nextColSE, player, opponent, board)) {
+                    if (checkSouthEastCell(nextRowSE, nextColSE, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -384,7 +415,7 @@ public class Hexed {
 
             try {
                 if (board[nextColSW][nextRowSW] == opponent) {
-                    if (checkSouthWestCell(nextRowSW, nextColSW, player, opponent, board)) {
+                    if (checkSouthWestCell(nextRowSW, nextColSW, player, opponent, board, occupied)) {
                         valid = true;
                     }
                 }
@@ -409,7 +440,7 @@ public class Hexed {
         return res;
     }
 
-    public static boolean checkNorthCell(int row, int col, int player, int opponent, int[][] board) {
+    public static boolean checkNorthCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         int nextRow = row + 1;
         int nextCol = col;
@@ -427,14 +458,25 @@ public class Hexed {
             valid = false;
         }
 
+        // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
+        // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
-            return checkNorthCell(nextRow, nextCol, player, opponent, board);
+            if (occupied) {
+                if (checkNorthCell(nextRow, nextCol, player, opponent, board,occupied)) {
+                    board[col][row] = player;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return checkNorthCell(nextRow, nextCol, player, opponent, board,occupied);
+            }
         }
 
         return valid;
     }
 
-    public static boolean checkNorthWestCell(int row, int col, int player, int opponent, int[][] board) {
+    public static boolean checkNorthWestCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
 
         int nextRow = row, nextCol = col;
@@ -461,15 +503,26 @@ public class Hexed {
             valid = false;
         }
 
+        // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
+        // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
-            return checkNorthWestCell(nextRow, nextCol, player, opponent, board);
+            if (occupied) {
+                if (checkNorthWestCell(nextRow, nextCol, player, opponent, board, occupied)) {
+                    board[col][row] = player;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return checkNorthWestCell(nextRow, nextCol, player, opponent, board, occupied);
+            }
         }
 
         return valid;
 
     }
 
-    public static boolean checkNorthEastCell(int row, int col, int player, int opponent, int[][] board) {
+    public static boolean checkNorthEastCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
         int nextRow = row, nextCol = col;
@@ -496,14 +549,25 @@ public class Hexed {
             valid = false;
         }
 
+        // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
+        // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
-            return checkNorthEastCell(nextRow, nextCol, player, opponent, board);
+            if (occupied) {
+                if (checkNorthEastCell(nextRow, nextCol, player, opponent, board, occupied)) {
+                    board[col][row] = player;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return checkNorthEastCell(nextRow, nextCol, player, opponent, board, occupied);
+            }
         }
 
         return valid;
     }
 
-    public static boolean checkSouthCell(int row, int col, int player, int opponent, int[][] board) {
+    public static boolean checkSouthCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
         int nextRow = row - 1;
@@ -522,14 +586,25 @@ public class Hexed {
             valid = false;
         }
 
+        // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
+        // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
-            return checkSouthCell(nextRow, nextCol, player, opponent, board);
+            if (occupied) {
+                if (checkSouthCell(nextRow, nextCol, player, opponent, board, occupied)) {
+                    board[col][row] = player;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return checkSouthCell(nextRow, nextCol, player, opponent, board, occupied);
+            }
         }
 
         return valid;
     }
 
-    public static boolean checkSouthEastCell(int row, int col, int player, int opponent, int[][] board) {
+    public static boolean checkSouthEastCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
         int nextRow = row, nextCol = col;
@@ -556,14 +631,25 @@ public class Hexed {
             valid = false;
         }
 
+        // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
+        // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
-            return checkSouthEastCell(nextRow, nextCol, player, opponent, board);
+            if (occupied) {
+                if (checkSouthEastCell(nextRow, nextCol, player, opponent, board, occupied)) {
+                    board[col][row] = player;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return checkSouthEastCell(nextRow, nextCol, player, opponent, board, occupied);
+            }
         }
 
         return valid;
     }
 
-    public static boolean checkSouthWestCell(int row, int col, int player, int opponent, int[][] board) {
+    public static boolean checkSouthWestCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
         int nextRow = row, nextCol = col;
@@ -590,8 +676,19 @@ public class Hexed {
             valid = false;
         }
 
+        // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
+        // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
-            return checkSouthWestCell(nextRow, nextCol, player, opponent, board);
+            if (occupied) {
+                if (checkSouthWestCell(nextRow, nextCol, player, opponent, board, occupied)) {
+                    board[col][row] = player;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return checkSouthWestCell(nextRow, nextCol, player, opponent, board, occupied);
+            }
         }
 
         return valid;
@@ -618,7 +715,7 @@ public class Hexed {
 
 
         //checks if the move is valid and turns the color of the cells
-        if (isValid(col, row, board, player)) {
+        if (isValid(col, row, board, player, true)) {
             board[col][row] = player;
             if (player == Hexed.GREEN) {
                 player = Hexed.RED;
