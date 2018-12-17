@@ -80,7 +80,7 @@ public class Hexed {
 
     public static void main(String[] args) {
         ArrayList<Move> moves = new ArrayList<>();
-        boolean gameOver = false, playerHexxed = false, opHexxed = false;
+        boolean gameOver = false, playerHexed = false, opHexed = false;
 
         System.out.println("Enter initial game info.");
         System.out.print("Column: ");
@@ -128,14 +128,19 @@ public class Hexed {
 
       // TODO no function or statements yet to say that a game is over
       while(!gameOver){
-
+        String[] stringArray;
         if (player == 1) {
 
             Move playerMove = new Move();
             System.out.print("Move:");
             playerMoves = getMoves(playerColor);
-            playerMove = getRandomMove(playerMoves);
-            System.out.println(playerMove.toString());
+            if(isHexed(playerMoves)){
+              playerHexed = true;
+              System.out.println("Hexed!");
+            }else{
+              playerMove = getRandomMove(playerMoves);
+              System.out.println(playerMove.toString());
+            }
 
             try {
                 move(playerMove, playerColor, board);
@@ -152,6 +157,7 @@ public class Hexed {
             // }
 
             System.out.print("Enter opponent's move: ");
+            String recordMove = kbd.nextLine();
             int opCol = kbd.nextInt();
             int opRow = kbd.nextInt();
             Move opMove = new Move(opCol, opRow, opColor);
@@ -162,6 +168,7 @@ public class Hexed {
                 e.printStackTrace();
             }
 
+
             // for (int i = 0; i < board.length; i++) {
             //     //loop through rows
             //     for (int j = 0; j < board[i].length; j++) {
@@ -170,22 +177,28 @@ public class Hexed {
             // }
 
         } else {
-            System.out.print("Enter opponent's move: ");
-            int opCol = kbd.nextInt();
-            int opRow = kbd.nextInt();
-            Move opMove = new Move(opCol, opRow, opColor);
+          System.out.print("Enter opponent's move: ");
+          int opCol = kbd.nextInt();
+          int opRow = kbd.nextInt();
+          Move opMove = new Move(opCol, opRow, opColor);
 
-            try {
-                move(opMove, opColor, board);
-            } catch(Exception e) {
+          try {
+              move(opMove, opColor, board);
+          } catch(Exception e) {
               e.printStackTrace();
-            }
+          }
 
             Move playerMove = new Move();
             System.out.print("Move:");
             playerMoves = getMoves(playerColor);
-            playerMove = getRandomMove(playerMoves);
-            System.out.println(playerMove.toString());
+            if(isHexed(playerMoves)){
+              playerHexed = true;
+              System.out.println("Hexed!");
+            }else{
+              playerMove = getRandomMove(playerMoves);
+              System.out.println(playerMove.toString());
+            }
+
 
             try {
                 move(playerMove, playerColor, board);
@@ -194,6 +207,8 @@ public class Hexed {
             }
             playerMoves.clear();
         }
+
+        gameOver = isGameOver(playerHexed, opHexed);
     }
 
     }
@@ -439,6 +454,18 @@ public class Hexed {
         }
 
         return res;
+    }
+
+    public static boolean isGameOver(boolean hex1, boolean hex2){
+      boolean res = false;
+
+      if(hex1 && hex2){
+        res = true;
+      }else{
+        res = false;
+      }
+
+      return res;
     }
 
     public static boolean checkNorthCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
