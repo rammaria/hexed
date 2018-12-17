@@ -126,6 +126,7 @@ public class Hexed {
 
       ArrayList<Move> playerMoves = new ArrayList<>();
 
+      // TODO no function or statements yet to say that a game is over
       while(!gameOver){
 
         if (player == 1) {
@@ -458,6 +459,7 @@ public class Hexed {
             valid = false;
         }
 
+        // TODO this is for sandwiched tiles.
         // if cell is opponent and is occupied, tiles will change as long as the path is validMoves
         // if not occupied, nothing happends
         if (board[nextCol][nextRow] == opponent) {
