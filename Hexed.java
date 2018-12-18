@@ -62,12 +62,15 @@ public class Hexed {
     public static final int GREEN = 1; //constant color value assignments
     public static final int RED = 2;
     public static final int NO_COLOR = 0; // constant value for no color tile
-    public static final int EMPTY = 3; // constant value for no tile
+    public static final int BLANK = 3; // constant value for no tile
+
 
     public static void main(String[] args) {
         ArrayList<Move> moves = new ArrayList<>();
         boolean gameOver = false;
 
+        // initial game info
+        // @author villegas
         System.out.println("Enter initial game info.");
         System.out.print("Column: ");
         int initCol = kbd.nextInt();
@@ -122,7 +125,8 @@ public class Hexed {
       ArrayList<Move> opMoves = new ArrayList<>();
       String[] stringArray;
 
-      // TODO no function or statements yet to say that a game is over
+      // @author advincula
+      // @author villegas
       while(!gameOver){
 
           boolean playerHexed = false, opHexed = false;
@@ -166,7 +170,7 @@ public class Hexed {
                   opHexed = true;
                   System.out.println(playerMoves.toString());
                   System.out.println("\n Opponent is Hexed!");
-    
+
                   try {
                       move(null, opponent);
                   } catch(Exception e) {
@@ -254,6 +258,7 @@ public class Hexed {
       }
     }
 
+    // @author villegas
     //generates the board with the starting board that has 6 alternately colored tiles
     public static int[][] setInitialBoard(int col, int row, int color) {
         int[][] startingBoard = new int[9][7];
@@ -268,10 +273,10 @@ public class Hexed {
         }
 
         //cells that are not part of the board
-        startingBoard[1][6] = Hexed.EMPTY;
-        startingBoard[3][6] = Hexed.EMPTY;
-        startingBoard[5][6] = Hexed.EMPTY;
-        startingBoard[7][6] = Hexed.EMPTY;
+        startingBoard[1][6] = Hexed.BLANK;
+        startingBoard[3][6] = Hexed.BLANK;
+        startingBoard[5][6] = Hexed.BLANK;
+        startingBoard[7][6] = Hexed.BLANK;
 
         if (color == Hexed.GREEN) {
             //even
@@ -282,7 +287,9 @@ public class Hexed {
                 startingBoard[col][row - 2] = Hexed.RED;
                 startingBoard[col + 1][row - 2] = Hexed.GREEN;
                 startingBoard[col + 1][row - 1] = Hexed.RED;
-            } else {
+            }
+            // odd
+            else {
                 startingBoard[col][row] = Hexed.GREEN;
                 startingBoard[col - 1][row] = Hexed.RED;
                 startingBoard[col - 1][row - 1] = Hexed.GREEN;
@@ -301,7 +308,9 @@ public class Hexed {
                 startingBoard[col][row - 2] = Hexed.GREEN;
                 startingBoard[col + 1][row - 2] = Hexed.RED;
                 startingBoard[col + 1][row - 1] = Hexed.GREEN;
-            } else {
+            }
+            // odd
+            else {
                 startingBoard[col][row] = Hexed.RED;
                 startingBoard[col - 1][row] = Hexed.GREEN;
                 startingBoard[col - 1][row - 1] = Hexed.RED;
@@ -313,6 +322,7 @@ public class Hexed {
         return startingBoard;
     }
 
+    // @author advincula
     //returns the list of valid moves
     public static ArrayList<Move> getMoves(int playingColor) {
         ArrayList<Move> validMoves = new ArrayList<Move>();
@@ -326,6 +336,8 @@ public class Hexed {
         return validMoves;
     }
 
+    // @author advincula
+    // @author villegas
     //check if move is valid for all the cells in different directions
     public static boolean isValid(int col, int row, int[][] board, int player, boolean occupied) {
 
@@ -333,7 +345,7 @@ public class Hexed {
             return false;
         }
 
-        if (board[col][row] == Hexed.EMPTY) {
+        if (board[col][row] == Hexed.BLANK) {
             return false;
         }
 
@@ -494,6 +506,7 @@ public class Hexed {
         return valid;
     }
 
+    // @author advincula
     //check if there are still valid moves
     public static boolean isHexed(ArrayList<Move> moves) {
         boolean res = false;
@@ -507,6 +520,7 @@ public class Hexed {
         return res;
     }
 
+    // @author advincula
     public static boolean isGameOver(boolean hex1, boolean hex2){
       boolean res = false;
 
@@ -519,6 +533,8 @@ public class Hexed {
       return res;
     }
 
+    // @author advincula
+    // @author villegas
     public static boolean checkNorthCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         int nextRow = row + 1;
@@ -560,6 +576,8 @@ public class Hexed {
         return valid;
     }
 
+    // @author advincula
+    // @author villegas
     public static boolean checkNorthWestCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         int nextRow = row, nextCol = col;
@@ -608,6 +626,8 @@ public class Hexed {
 
     }
 
+    // @author advincula
+    // @author villegas
     public static boolean checkNorthEastCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
@@ -656,6 +676,8 @@ public class Hexed {
         return valid;
     }
 
+    // @author advincula
+    // @author villegas
     public static boolean checkSouthCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
@@ -696,6 +718,8 @@ public class Hexed {
         return valid;
     }
 
+    // @author advincula
+    // @author villegas
     public static boolean checkSouthEastCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
@@ -744,6 +768,8 @@ public class Hexed {
         return valid;
     }
 
+    // @author advincula
+    // @author villegas
     public static boolean checkSouthWestCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
         // if col is odd
@@ -792,6 +818,7 @@ public class Hexed {
         return valid;
     }
 
+    // @author advincula
     public static void move(Move move, int player){
       //a move can be null if the player is hexed
       //current player loses a turn
@@ -804,6 +831,7 @@ public class Hexed {
       }
     }
 
+    // @author advincula
     public static void move(Move move, int player, int[][] board) throws Exception {
         int col = move.getCol();
         int row = move.getRow();
