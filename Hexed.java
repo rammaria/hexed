@@ -54,19 +54,19 @@ class Move {
     }
 }
 
-class State {
-    private int[][] board;
-    private int player;
-    private int color;
-
-    public State() {
-        this.board = board;
-        this.player = player;
-        this.color = color;
-    }
-
-
-}
+// class State {
+//     private int[][] board;
+//     private int player;
+//     private int color;
+//
+//     public State() {
+//         this.board = board;
+//         this.player = player;
+//         this.color = color;
+//     }
+//
+//
+// }
 
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
@@ -137,16 +137,23 @@ public class Hexed {
             if(isHexed(playerMoves)){
               playerHexed = true;
               System.out.println("Hexed!");
+              try {
+                  move(null, player);
+              } catch(Exception e) {
+                e.printStackTrace();
+              }
             }else{
               playerMove = getRandomMove(playerMoves);
               System.out.println(playerMove.toString());
+
+              try {
+                  move(playerMove, playerColor, board);
+              } catch(Exception e) {
+                e.printStackTrace();
+              }
             }
 
-            try {
-                move(playerMove, playerColor, board);
-            } catch(Exception e) {
-              e.printStackTrace();
-            }
+
             playerMoves.clear();
 
             // for (int i = 0; i < board.length; i++) {
@@ -157,7 +164,6 @@ public class Hexed {
             // }
 
             System.out.print("Enter opponent's move: ");
-            String recordMove = kbd.nextLine();
             int opCol = kbd.nextInt();
             int opRow = kbd.nextInt();
             Move opMove = new Move(opCol, opRow, opColor);
@@ -473,8 +479,12 @@ public class Hexed {
         int nextRow = row + 1;
         int nextCol = col;
 
+        //checks if the row above has the player's color
         if (board[nextCol][nextRow] == player) {
-            valid = true;
+          if(occupied){
+            board[col][row] = player;
+          }
+          valid = true;
         }
 
         if (board[nextCol][nextRow] == Hexed.NO_COLOR) {
@@ -507,7 +517,6 @@ public class Hexed {
 
     public static boolean checkNorthWestCell(int row, int col, int player, int opponent, int[][] board, boolean occupied) {
         boolean valid = false;
-
         int nextRow = row, nextCol = col;
 
         //if col is even
@@ -520,7 +529,10 @@ public class Hexed {
         }
 
         if (board[nextCol][nextRow] == player) {
-            valid = true;
+          if(occupied){
+            board[col][row] = player;
+          }
+          valid = true;
         }
 
         if (board[nextCol][nextRow] == Hexed.NO_COLOR) {
@@ -566,7 +578,10 @@ public class Hexed {
         }
 
         if (board[nextCol][nextRow] == player) {
-            valid = true;
+          if(occupied){
+            board[col][row] = player;
+          }
+          valid = true;
         }
 
         if (board[nextCol][nextRow] == Hexed.NO_COLOR) {
@@ -603,7 +618,10 @@ public class Hexed {
         int nextCol = col;
 
         if (board[nextCol][nextRow] == player) {
-            valid = true;
+          if(occupied){
+            board[col][row] = player;
+          }
+          valid = true;
         }
 
         if (board[nextCol][nextRow] == Hexed.NO_COLOR) {
@@ -648,7 +666,10 @@ public class Hexed {
         }
 
         if (board[nextCol][nextRow] == player) {
-            valid = true;
+          if(occupied){
+            board[col][row] = player;
+          }
+          valid = true;
         }
 
         if (board[nextCol][nextRow] == Hexed.NO_COLOR) {
@@ -693,7 +714,10 @@ public class Hexed {
         }
 
         if (board[nextCol][nextRow] == player) {
-            valid = true;
+          if(occupied){
+            board[col][row] = player;
+          }
+          valid = true;
         }
 
         if (board[nextCol][nextRow] == Hexed.NO_COLOR) {
@@ -723,15 +747,20 @@ public class Hexed {
         return valid;
     }
 
+    public static void move(Move move, int player){
+      //a move can be null if hexed
+      //current player loses a turn
+      if (move == null) {
+          if (player == Hexed.GREEN) {
+              player = Hexed.RED;
+          } else {
+              player = Hexed.GREEN;
+          }
+      }
+    }
     public static void move(Move move, int player, int[][] board) throws Exception {
 
-        if (move == null) {
-            if (player == Hexed.GREEN) {
-                player = Hexed.RED;
-            } else {
-                player = Hexed.GREEN;
-            }
-        }
+
 
         int col = move.getCol();
         int row = move.getRow();
