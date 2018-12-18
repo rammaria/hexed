@@ -54,20 +54,6 @@ class Move {
     }
 }
 
-// class State {
-//     private int[][] board;
-//     private int player;
-//     private int color;
-//
-//     public State() {
-//         this.board = board;
-//         this.player = player;
-//         this.color = color;
-//     }
-//
-//
-// }
-
 public class Hexed {
     private static Scanner kbd = new Scanner(System.in);
     private static Random randomMoveGenerator = new Random();
@@ -76,11 +62,11 @@ public class Hexed {
     public static final int GREEN = 1; //constant color value assignments
     public static final int RED = 2;
     public static final int NO_COLOR = 0; // constant value for no color tile
-    public static final int NO_TILE = 3; // constant value for no tile
+    public static final int EMPTY = 3; // constant value for no tile
 
     public static void main(String[] args) {
         ArrayList<Move> moves = new ArrayList<>();
-        boolean gameOver = false, playerHexed = false, opHexed = false;
+        boolean gameOver = false;
 
         System.out.println("Enter initial game info.");
         System.out.print("Column: ");
@@ -93,6 +79,14 @@ public class Hexed {
 
         System.out.print("\nWhat player am I? [1/2]: ");
         int player = kbd.nextInt();
+        int opponent = 0;
+
+        if (player == 1) {
+            opponent = 2;
+        } else if (player == 2) {
+            opponent = 1;
+        }
+
         System.out.print("What is my color?[r/g]: ");
         char pColor = kbd.next().charAt(0);
         int playerColor = 1;
@@ -125,98 +119,139 @@ public class Hexed {
       }*/
 
       ArrayList<Move> playerMoves = new ArrayList<>();
+      ArrayList<Move> opMoves = new ArrayList<>();
+      String[] stringArray;
 
       // TODO no function or statements yet to say that a game is over
       while(!gameOver){
-        String[] stringArray;
-        if (player == 1) {
 
-            Move playerMove = new Move();
-            System.out.print("Move:");
-            playerMoves = getMoves(playerColor);
-            if(isHexed(playerMoves)){
-              playerHexed = true;
-              System.out.println("Hexed!");
-              try {
-                  move(null, player);
-              } catch(Exception e) {
-                e.printStackTrace();
+          boolean playerHexed = false, opHexed = false;
+
+          if (player == 1) {
+
+              Move playerMove = new Move();
+              playerMoves = getMoves(playerColor);
+
+              if (isHexed(playerMoves)) {
+                  playerHexed = true;
+                  System.out.println(playerMoves.toString());
+                  System.out.println("\n Player is Hexed!");
+
+                  try {
+                      move(null, player);
+                  } catch(Exception e) {
+                      e.printStackTrace();
+                  }
+
+              } else {
+                  System.out.print("\nPossible player moves: ");
+                  System.out.println(playerMoves.toString());
+                  System.out.print("\nPlayer Move:");
+                  playerMove = getRandomMove(playerMoves);
+                  System.out.println(playerMove.toString());
+
+                  try {
+                      move(playerMove, playerColor, board);
+                      playerMoves.clear();
+                  } catch(Exception e) {
+                      e.printStackTrace();
+                  }
               }
-            }else{
-              playerMove = getRandomMove(playerMoves);
-              System.out.println(playerMove.toString());
 
-              try {
-                  move(playerMove, playerColor, board);
-              } catch(Exception e) {
-                e.printStackTrace();
+              opMoves = getMoves(opColor);
+              System.out.print("\nOpponent possible moves: ");
+              System.out.println(opMoves.toString());
+
+              if (isHexed(opMoves)) {
+                  opHexed = true;
+                  System.out.println(playerMoves.toString());
+                  System.out.println("\n Opponent is Hexed!");
+    
+                  try {
+                      move(null, opponent);
+                  } catch(Exception e) {
+                      e.printStackTrace();
+                  }
+
+              } else {
+                  try {
+                      System.out.print("\nEnter opponent's move: ");
+                      int opCol = kbd.nextInt();
+                      int opRow = kbd.nextInt();
+                      Move opMove = new Move(opCol, opRow, opColor);
+
+                      move(opMove, opColor, board);
+                      opMoves.clear();
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
               }
-            }
-
-
-            playerMoves.clear();
-
-            // for (int i = 0; i < board.length; i++) {
-            //     //loop through rows
-            //     for (int j = 0; j < board[i].length; j++) {
-            //         System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
-            //     }
-            // }
-
-            System.out.print("Enter opponent's move: ");
-            int opCol = kbd.nextInt();
-            int opRow = kbd.nextInt();
-            Move opMove = new Move(opCol, opRow, opColor);
-
-            try {
-                move(opMove, opColor, board);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-
-
-            // for (int i = 0; i < board.length; i++) {
-            //     //loop through rows
-            //     for (int j = 0; j < board[i].length; j++) {
-            //         System.out.println("["+ i + "]" + "[" + j + "]" + " = " + board[i][j]);
-            //     }
-            // }
 
         } else {
-          System.out.print("Enter opponent's move: ");
-          int opCol = kbd.nextInt();
-          int opRow = kbd.nextInt();
-          Move opMove = new Move(opCol, opRow, opColor);
+            opMoves = getMoves(opColor);
+            System.out.print("\nOpponent possible moves: ");
+            System.out.println(opMoves.toString());
 
-          try {
-              move(opMove, opColor, board);
-          } catch(Exception e) {
-              e.printStackTrace();
-          }
+            if (isHexed(opMoves)) {
+                opHexed = true;
+                System.out.println(playerMoves.toString());
+                System.out.println("\n Opponent is Hexed!");
+
+                try {
+                    move(null, opponent);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                try {
+                    System.out.print("\nEnter opponent's move: ");
+                    int opCol = kbd.nextInt();
+                    int opRow = kbd.nextInt();
+                    Move opMove = new Move(opCol, opRow, opColor);
+
+                    move(opMove, opColor, board);
+                    opMoves.clear();
+                  } catch(Exception e) {
+                      e.printStackTrace();
+                  }
+            }
 
             Move playerMove = new Move();
-            System.out.print("Move:");
             playerMoves = getMoves(playerColor);
-            if(isHexed(playerMoves)){
-              playerHexed = true;
-              System.out.println("Hexed!");
-            }else{
-              playerMove = getRandomMove(playerMoves);
-              System.out.println(playerMove.toString());
+
+            if (isHexed(playerMoves)) {
+                playerHexed = true;
+                System.out.println(playerMoves.toString());
+                System.out.println("\n Player is Hexed!");
+
+                try {
+                    move(null, player);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                System.out.print("\nPossible player moves: ");
+                System.out.println(playerMoves.toString());
+                System.out.print("\nPlayer Move:");
+                playerMove = getRandomMove(playerMoves);
+                System.out.println(playerMove.toString());
+
+                try {
+                    move(playerMove, playerColor, board);
+                    playerMoves.clear();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
-
-
-            try {
-                move(playerMove, playerColor, board);
-            } catch(Exception e) {
-
-            }
-            playerMoves.clear();
         }
 
         gameOver = isGameOver(playerHexed, opHexed);
     }
-
+      if(gameOver){
+        System.out.println("Game Over");
+      }
     }
 
     //generates the board with the starting board that has 6 alternately colored tiles
@@ -231,6 +266,12 @@ public class Hexed {
                 startingBoard[i][j] = Hexed.NO_COLOR;
             }
         }
+
+        //cells that are not part of the board
+        startingBoard[1][6] = Hexed.EMPTY;
+        startingBoard[3][6] = Hexed.EMPTY;
+        startingBoard[5][6] = Hexed.EMPTY;
+        startingBoard[7][6] = Hexed.EMPTY;
 
         if (color == Hexed.GREEN) {
             //even
@@ -289,6 +330,10 @@ public class Hexed {
     public static boolean isValid(int col, int row, int[][] board, int player, boolean occupied) {
 
         if (board[col][row] != Hexed.NO_COLOR) {
+            return false;
+        }
+
+        if (board[col][row] == Hexed.EMPTY) {
             return false;
         }
 
@@ -433,7 +478,7 @@ public class Hexed {
 
             //southwest
             int nextRowSW = row;
-            int nextColSW = col + 1;
+            int nextColSW = col - 1;
 
             try {
                 if (board[nextColSW][nextRowSW] == opponent) {
@@ -748,7 +793,7 @@ public class Hexed {
     }
 
     public static void move(Move move, int player){
-      //a move can be null if hexed
+      //a move can be null if the player is hexed
       //current player loses a turn
       if (move == null) {
           if (player == Hexed.GREEN) {
@@ -758,10 +803,8 @@ public class Hexed {
           }
       }
     }
+
     public static void move(Move move, int player, int[][] board) throws Exception {
-
-
-
         int col = move.getCol();
         int row = move.getRow();
         int color = move.getColor();
@@ -782,7 +825,7 @@ public class Hexed {
             }
             return;
         } else {
-            throw new Exception("Not a Valid Move.");
+            //throw new Exception("Not a Valid Move.");
         }
     }
 
